@@ -6,7 +6,7 @@
 /*   By: ikozhina <ikozhina@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 11:59:21 by ikozhina          #+#    #+#             */
-/*   Updated: 2025/03/14 22:47:06 by ikozhina         ###   ########.fr       */
+/*   Updated: 2025/03/14 23:07:48 by ikozhina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,6 @@ int main(void)
 
 	sigaction(SIGUSR1, &sa, NULL);
 	sigaction(SIGUSR2, &sa, NULL);
-	printf("Server pid - %d\n", getpid());
-
 	while (1)
 		pause();
 }
