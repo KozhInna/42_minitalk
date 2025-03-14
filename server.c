@@ -6,7 +6,7 @@
 /*   By: ikozhina <ikozhina@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 11:59:21 by ikozhina          #+#    #+#             */
-/*   Updated: 2025/03/14 15:37:36 by ikozhina         ###   ########.fr       */
+/*   Updated: 2025/03/14 22:47:06 by ikozhina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void handle_sig(int sig)
 	i++;
 	if (i == 8)
 	{
-		printf("res - %c\n", c);
+		printf("%c", c);
 		fflush(stdout);
 		i = 0;
 		c = 0;
