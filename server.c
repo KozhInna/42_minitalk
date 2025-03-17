@@ -6,7 +6,7 @@
 /*   By: ikozhina <ikozhina@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 11:59:21 by ikozhina          #+#    #+#             */
-/*   Updated: 2025/03/17 15:12:51 by ikozhina         ###   ########.fr       */
+/*   Updated: 2025/03/17 22:15:04 by ikozhina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,11 @@ void	handler(int sig, siginfo_t *siginfo, void *context)
 	static unsigned char	c = 0;
 
 	(void)context;
-	(void)siginfo;
+	if (siginfo->si_pid <= 0)
+	{
+		write(1, "Error siginfo\n", 14);
+		return ;
+	}
 	if (sig == SIGUSR1)
 		c = (c << 1) | 1;
 	else
@@ -36,7 +40,8 @@ void	handler(int sig, siginfo_t *siginfo, void *context)
 		i = 0;
 		c = 0;
 	}
-	kill(siginfo->si_pid, SIGUSR1);
+	if (kill(siginfo->si_pid, SIGUSR1) == -1)
+		write(1, "Error kill\n", 11);
 }
 
 void	assemble_str(char c)
@@ -44,10 +49,12 @@ void	assemble_str(char c)
 	static char		buffer[5000];
 	static size_t	i = 0;
 
-	buffer[i++] = c;
+	buffer[i] = c;
+	i++;
 	if (c == '\0')
 	{
 		write(1, &buffer, i);
+		write(1, "\n", 1);
 		i = 0;
 	}
 }
@@ -57,6 +64,7 @@ int	main(void)
 	struct sigaction	sa;
 
 	ft_memset(&sa, 0, sizeof(sa));
+	sigemptyset(&sa.sa_mask);
 	sa.sa_sigaction = &handler;
 	sa.sa_flags = SA_SIGINFO;
 	sigaction(SIGUSR1, &sa, NULL);
