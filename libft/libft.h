@@ -6,7 +6,7 @@
 /*   By: ikozhina <ikozhina@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 12:52:00 by ikozhina          #+#    #+#             */
-/*   Updated: 2025/03/16 22:17:27 by ikozhina         ###   ########.fr       */
+/*   Updated: 2025/03/17 11:29:24 by ikozhina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,14 +77,14 @@ void	ft_lstadd_back(t_list **lst, t_list *new);
 void	ft_lstdelone(t_list *lst, void (*del)(void *));
 void	ft_lstadd_front(t_list **lst, t_list *new);
 int		ft_lstsize(t_list *lst);
-void 	ft_lstclear(t_list **lst, void (*del)(void *));
+void	ft_lstclear(t_list **lst, void (*del)(void *));
 
 // ft_printf Functions
-int	ft_printf(const char *str, ...);
-int	ft_putchar(char c);
-int	ft_putptr(void *ptr, int base, char l);
-int	ft_putnbr_unsigned(unsigned long n, int base, char l);
-int	ft_putnbr(int n);
-int	ft_putstr(char *s);
+int		ft_printf(const char *str, ...);
+int		ft_putchar(char c);
+int		ft_putptr(void *ptr, int base, char l);
+int		ft_putnbr_unsigned(unsigned long n, int base, char l);
+int		ft_putnbr(int n);
+int		ft_putstr(char *s);
 
 #endif
