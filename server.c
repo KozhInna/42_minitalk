@@ -6,13 +6,26 @@
 /*   By: ikozhina <ikozhina@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 11:59:21 by ikozhina          #+#    #+#             */
-/*   Updated: 2025/03/17 22:15:04 by ikozhina         ###   ########.fr       */
+/*   Updated: 2025/03/18 13:25:49 by ikozhina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-void	assemble_str(char c);
+void	assemble_str(char c)
+{
+	static char		buffer[BUFFER_SIZE];
+	static size_t	i = 0;
+
+	buffer[i++] = c;
+	if (c == '\0')
+	{
+		buffer[i - 1] = '\0';
+		write(1, &buffer, i - 1);
+		write(1, "\n", 1);
+		i = 0;
+	}
+}
 
 void	handler(int sig, siginfo_t *siginfo, void *context)
 {
@@ -33,30 +46,11 @@ void	handler(int sig, siginfo_t *siginfo, void *context)
 	if (i == 8)
 	{
 		assemble_str(c);
-		// if (c == '\0')
-		// 	write(1, "\n", 1);
-		// else
-		// write(1, &c, 1);
 		i = 0;
 		c = 0;
 	}
 	if (kill(siginfo->si_pid, SIGUSR1) == -1)
 		write(1, "Error kill\n", 11);
-}
-
-void	assemble_str(char c)
-{
-	static char		buffer[5000];
-	static size_t	i = 0;
-
-	buffer[i] = c;
-	i++;
-	if (c == '\0')
-	{
-		write(1, &buffer, i);
-		write(1, "\n", 1);
-		i = 0;
-	}
 }
 
 int	main(void)
@@ -69,7 +63,7 @@ int	main(void)
 	sa.sa_flags = SA_SIGINFO;
 	sigaction(SIGUSR1, &sa, NULL);
 	sigaction(SIGUSR2, &sa, NULL);
-	printf("Server pid - %d\n", getpid());
+	printf("Server PID: %d\n", getpid());
 	while (1)
 		pause();
 	return (0);
