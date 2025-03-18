@@ -6,7 +6,7 @@
 /*   By: ikozhina <ikozhina@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 11:59:18 by ikozhina          #+#    #+#             */
-/*   Updated: 2025/03/18 15:18:30 by ikozhina         ###   ########.fr       */
+/*   Updated: 2025/03/18 14:38:51 by ikozhina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,20 +38,8 @@ void	send_char(int pid, char c)
 
 void	receive_ack_handler(int sig)
 {
-	static size_t count = 0;
-
-	if (sig == SIGUSR1)
-	{
-		g_ack_received = 1;
-		count++;
-	}
-	else
-	{
-		ft_putnbr(count / 8);
-		ft_printf(" letters were sent and printed by server\n");
-		count = 0;
-	}
-
+	(void)sig;
+	g_ack_received = 1;
 }
 
 int	pid_check(char *pid_str)
@@ -95,7 +83,6 @@ int	main(int argc, char **argv)
 	sigemptyset(&sa.sa_mask);
 	sa.sa_handler = &receive_ack_handler;
 	sigaction(SIGUSR1, &sa, NULL);
-	sigaction(SIGUSR2, &sa, NULL);
 	while (j <= len_str)
 		send_char(server_pid, argv[2][j++]);
 	return (0);

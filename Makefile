@@ -6,7 +6,7 @@
 #    By: ikozhina <ikozhina@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/25 12:02:56 by ikozhina          #+#    #+#              #
-#    Updated: 2025/03/16 22:39:43 by ikozhina         ###   ########.fr        #
+#    Updated: 2025/03/18 14:59:18 by ikozhina         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,12 +22,15 @@ CFLAGS = -Wall -Wextra -Werror -I./libft -I./include
 SRCS = client.c server.c
 OBJS = $(SRCS:.c=.o)
 
+# Header files
+HEADERS = include/minitalk.h
+
 # Library location
 LIBFT = libft/libft.a
 LIBFT_PATH = libft
 
 # Default target (all)
-all: $(LIBFT) $(SERVER) $(CLIENT) 
+all: $(LIBFT) $(SERVER) $(CLIENT)
 
 # Server target
 $(SERVER): server.o $(LIBFT)
@@ -42,7 +45,7 @@ $(LIBFT):
 	$(MAKE) -C $(LIBFT_PATH)
 
 # Compile .o files
-%.o: %.c
+%.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Clean object files
@@ -52,7 +55,7 @@ clean:
 
 # Clean all, including executables and library files
 fclean: clean
-	rm -f $(SERVER) $(CLIENT) 
+	rm -f $(SERVER) $(CLIENT)
 	$(MAKE) -C $(LIBFT_PATH) fclean
 
 # Rebuild everything

@@ -6,13 +6,13 @@
 /*   By: ikozhina <ikozhina@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 11:59:21 by ikozhina          #+#    #+#             */
-/*   Updated: 2025/03/18 15:02:38 by ikozhina         ###   ########.fr       */
+/*   Updated: 2025/03/18 13:25:49 by ikozhina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-void	assemble_str(char c, pid_t client_pid)
+void	assemble_str(char c)
 {
 	static char		buffer[BUFFER_SIZE];
 	static size_t	i = 0;
@@ -23,7 +23,6 @@ void	assemble_str(char c, pid_t client_pid)
 		buffer[i - 1] = '\0';
 		write(1, &buffer, i - 1);
 		write(1, "\n", 1);
-		kill(client_pid, SIGUSR2);
 		i = 0;
 	}
 }
@@ -46,7 +45,7 @@ void	handler(int sig, siginfo_t *siginfo, void *context)
 	i++;
 	if (i == 8)
 	{
-		assemble_str(c, siginfo->si_pid);
+		assemble_str(c);
 		i = 0;
 		c = 0;
 	}
