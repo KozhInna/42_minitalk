@@ -6,58 +6,44 @@
 /*   By: ikozhina <ikozhina@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 11:59:18 by ikozhina          #+#    #+#             */
-/*   Updated: 2025/03/18 15:18:30 by ikozhina         ###   ########.fr       */
+/*   Updated: 2025/03/19 12:22:38 by ikozhina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-volatile sig_atomic_t	g_ack_received = 0;
+static volatile sig_atomic_t	g_ack_received = 0;
+static pid_t					pid_check(char *pid_str);
+static void						receive_ack_handler(int sig);
+static void						send_char(pid_t pid, char c);
 
-void	send_char(int pid, char c)
+int	main(int argc, char **argv)
+{
+	int					server_pid;
+	size_t				j;
+	size_t				len_str;
+	struct sigaction	sa;
+
+	if (argc != 3)
+		return (ft_printf("\nProgram expects 2 parameters\n"), 1);
+	if (argv[2] == NULL || argv[2][0] == '\0')
+		return (ft_printf("\nNothing to be sent\n"), 1);
+	j = 0;
+	server_pid = pid_check(argv[1]);
+	len_str = ft_strlen(argv[2]);
+	ft_memset(&sa, 0, sizeof(sa));
+	sigemptyset(&sa.sa_mask);
+	sa.sa_handler = &receive_ack_handler;
+	sigaction(SIGUSR1, &sa, NULL);
+	while (j <= len_str)
+		send_char(server_pid, argv[2][j++]);
+	return (0);
+}
+
+static pid_t	pid_check(char *pid_str)
 {
 	int		i;
-
-	i = 8;
-	while (i-- > 0)
-	{
-		if (kill(pid, 0) == -1)
-		{
-			write(1, "Server is not running\n", 22);
-			exit(1);
-		}
-		if ((c >> i) & 1)
-			kill(pid, SIGUSR1);
-		else
-			kill(pid, SIGUSR2);
-		while (!g_ack_received)
-			pause();
-		g_ack_received = 0;
-	}
-}
-
-void	receive_ack_handler(int sig)
-{
-	static size_t count = 0;
-
-	if (sig == SIGUSR1)
-	{
-		g_ack_received = 1;
-		count++;
-	}
-	else
-	{
-		ft_putnbr(count / 8);
-		ft_printf(" letters were sent and printed by server\n");
-		count = 0;
-	}
-
-}
-
-int	pid_check(char *pid_str)
-{
-	int	i;
-	int	pid;
+	pid_t	pid;
 
 	i = 0;
 	while (pid_str[i])
@@ -70,33 +56,37 @@ int	pid_check(char *pid_str)
 	}
 	pid = ft_atoi(pid_str);
 	if (pid <= 0 || kill(pid, 0) != 0)
-		{
-			ft_printf("\nInvalid PID: Process doesn't exist or can't be signaled\n");
-			exit(1);
-		}
+	{
+		ft_printf("\nInvalid PID: Process doesn't exist or can't be signaled\n");
+		exit(1);
+	}
 	return (pid);
 }
 
-int	main(int argc, char **argv)
+static void	receive_ack_handler(int sig)
 {
-	int					server_pid;
-	size_t				j;
-	size_t				len_str;
-	struct sigaction	sa;
+	(void)sig;
+	g_ack_received = 1;
+}
 
-	if (argc != 3)
-		return (ft_printf("\nProgram expects 2 parameters\n"), 1);
-	if (argv[2] == NULL || argv[2][0] == '\0')
-		return (ft_printf("\nNothing to send\n"), 1);
-	j = 0;
-	server_pid = pid_check(argv[1]);
-	len_str = ft_strlen(argv[2]);
-	ft_memset(&sa, 0, sizeof(sa));
-	sigemptyset(&sa.sa_mask);
-	sa.sa_handler = &receive_ack_handler;
-	sigaction(SIGUSR1, &sa, NULL);
-	sigaction(SIGUSR2, &sa, NULL);
-	while (j <= len_str)
-		send_char(server_pid, argv[2][j++]);
-	return (0);
+static void	send_char(pid_t pid, char c)
+{
+	int	i;
+
+	i = 8;
+	while (i-- > 0)
+	{
+		if (kill(pid, 0) == -1)
+		{
+			ft_printf("\nServer is not running\n");
+			exit(1);
+		}
+		if ((c >> i) & 1)
+			send_signal(pid, SIGUSR1);
+		else
+			send_signal(pid, SIGUSR2);
+		while (!g_ack_received)
+			pause();
+		g_ack_received = 0;
+	}
 }

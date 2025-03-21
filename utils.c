@@ -1,24 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minitalk.h                                         :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ikozhina <ikozhina@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/14 12:57:19 by ikozhina          #+#    #+#             */
-/*   Updated: 2025/03/19 11:50:10 by ikozhina         ###   ########.fr       */
+/*   Created: 2025/03/19 11:31:23 by ikozhina          #+#    #+#             */
+/*   Updated: 2025/03/19 11:31:36 by ikozhina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINITALK_H
-# define MINITALK_H
+#include "minitalk.h"
 
-# define BUFFER_SIZE 2100000
-
-# include "libft.h"
-# include <signal.h>
-# include <stdlib.h>
-
-void	send_signal(pid_t pid, int signal);
-
-#endif
+void	send_signal(pid_t pid, int signal)
+{
+	if (kill(pid, signal) == -1)
+	{
+		ft_printf("\nFailed to send %d to PID %d\n", signal, pid);
+		exit(1);
+	}
+}
